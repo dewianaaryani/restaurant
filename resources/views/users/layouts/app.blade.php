@@ -71,6 +71,7 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    @yield('script')
 </body>
 
 </html>

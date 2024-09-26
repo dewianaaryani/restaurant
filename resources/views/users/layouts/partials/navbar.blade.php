@@ -9,9 +9,16 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-0 pe-4">
             <a href="/" class="nav-item nav-link active">Home</a>
-            <a href="" class="nav-item nav-link">My Cart</a>
-           
+            <a href="{{route('cart.show')}}" class="nav-item nav-link">My Cart</a>
         </div>
-        <a href="" class="btn btn-primary py-2 px-4">Sign in</a>
+        
+        @if(Auth::check())
+            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-primary py-2 px-4">Logout</button>
+            </form>
+        @else
+            <a href="{{ route('login') }}" class="btn btn-primary py-2 px-4">Sign in</a>
+        @endif
     </div>
 </nav>
