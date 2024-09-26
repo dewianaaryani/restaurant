@@ -57,8 +57,11 @@
             </table>
 
             <div class="text-right">
-                <a href="{{route('checkout')}}" class="btn btn-primary">Proceed to Checkout</a>
-            </div>
+              <form action="{{ route('checkout') }}" method="POST">
+                  @csrf
+                  <button type="submit" class="btn btn-primary">Proceed to Checkout</button>
+              </form>
+          </div>
         @endif
     </div>
 @endsection
@@ -74,19 +77,53 @@
   });
 });
 
-function changeQuantity(cartId, change, price) {
-  const quantityInput = document.getElementById(`quantity-${cartId}`);
-  if (quantityInput) {
-    let quantity = parseInt(quantityInput.value) + change;
+// function changeQuantity(cartId, change, price) {
+//   const quantityInput = document.getElementById(`quantity-${cartId}`);
+//   if (quantityInput) {
+//     let quantity = parseInt(quantityInput.value) + change;
 
-    // Prevent quantity from going below 1
-    if (quantity < 1) {
-      quantity = 1; // Set to minimum of 1
-    }
+//     // Prevent quantity from going below 1
+//     if (quantity < 1) {
+//       quantity = 1; // Set to minimum of 1
+//     }
     
-    quantityInput.value = quantity; // Update the input field
-    updateTotal(cartId, price); // Update the total for this specific cart item
-  }
+//     quantityInput.value = quantity; // Update the input field
+//     updateTotal(cartId, price); // Update the total for this specific cart item
+//   }
+// }
+function changeQuantity(cartId, change, price) {
+    const quantityInput = document.getElementById(`quantity-${cartId}`);
+    if (quantityInput) {
+        let quantity = parseInt(quantityInput.value) + change;
+
+        // Prevent quantity from going below 1
+        if (quantity < 1) {
+            quantity = 1; // Set to minimum of 1
+        }
+        
+        quantityInput.value = quantity; // Update the input field
+        updateTotal(cartId, price); // Update the total for this specific cart item
+
+        // Send AJAX request to update the quantity in the database
+        updateCartQuantity(cartId, quantity);
+    }
+}
+
+function updateCartQuantity(cartId, quantity) {
+    $.ajax({
+        url: '{{ route("cart.update", ":id") }}'.replace(':id', cartId),
+        type: 'PATCH',
+        data: {
+            quantity: quantity,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log('Quantity updated successfully');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error updating quantity: ' + error);
+        }
+    });
 }
 
 function updateTotal(cartId, price) {

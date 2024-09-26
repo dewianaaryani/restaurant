@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\Cart;
 
 class User extends Authenticatable
 {
@@ -53,5 +54,9 @@ class User extends Authenticatable
         return new Attribute(
             get: fn ($value) => ["user", "admin", "manager"][$value],
         );
+    }
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
     }
 }
