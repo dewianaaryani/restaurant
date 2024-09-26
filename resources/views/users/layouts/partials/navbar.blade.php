@@ -7,11 +7,18 @@
         <span class="fa fa-bars"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav ms-auto py-0 pe-4">
-            <a href="/" class="nav-item nav-link active">Home</a>
-            <a href="{{route('cart.show')}}" class="nav-item nav-link">My Cart</a>
+        <div class="navbar-nav ms-auto py-0 pe-4">  
+            @if(Auth::user()->type == "admin") <!-- Assuming 1 is for Admin -->
+                <a href="{{ route('admin.home') }}" class="nav-item nav-link">Admin Dashboard</a>
+                <a href="" class="nav-item nav-link">Manage Orders</a>
+                <a href="" class="nav-item nav-link">Manage Users</a>
+                <!-- Add more admin-specific links here -->
+            @else
+                <a href="/" class="nav-item nav-link active">Home</a>
+                <a href="{{route('cart.show')}}" class="nav-item nav-link">My Cart</a>
+                <a href="{{route('orders.index')}}" class="nav-item nav-link">My Orders</a>
+            @endif
         </div>
-        
         @if(Auth::check())
             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                 @csrf
