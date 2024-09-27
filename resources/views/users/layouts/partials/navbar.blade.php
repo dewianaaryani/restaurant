@@ -14,6 +14,7 @@
                     <a href="{{ route('admin.home') }}" class="nav-item nav-link">Admin Dashboard</a>
                     <a href="{{route('admin.orders.index')}}" class="nav-item nav-link">Manage Orders</a>
                     <a href="{{route('admin.stocks.index')}}" class="nav-item nav-link">Manage Stocks</a>
+                    <a href="{{route('admin.reports.sales')}}" class="nav-item nav-link">Report</a>
                     <!-- Add more admin-specific links here -->
                 @else
                     

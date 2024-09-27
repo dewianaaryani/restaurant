@@ -8,6 +8,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\StockController as AdminStockController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 Route::get('/', [PageController::class, 'landingPage'])->name('landingPage');
 Auth::routes();
 
@@ -41,6 +42,7 @@ Route::middleware(['auth', 'user-access:admin'])->prefix('admin')->name('admin.'
     Route::get('/home', [HomeController::class, 'adminHome'])->name('home'); // Admin home route
     Route::resource('stocks', AdminStockController::class); // Admin stocks route
     Route::post('/{stock}/add-stock', [AdminStockController::class, 'addStock'])->name('addStock');
+    Route::get('/reports/sales', [AdminReportController::class, 'salesReport'])->name('reports.sales');
     // Orders Routes
     Route::prefix('orders')->name('orders.')->group(function () {
         Route::get('/', [AdminOrderController::class, 'index'])->name('index'); // List all orders
