@@ -6,6 +6,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\StockController as AdminStockController;
 Route::get('/', [PageController::class, 'landingPage'])->name('landingPage');
 Auth::routes();
 
@@ -37,12 +39,16 @@ All Admin Routes List
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/home', [HomeController::class, 'adminHome'])->name('home'); // Admin home route
-
+    Route::resource('stocks', AdminStockController::class); // Admin stocks route
+    Route::post('/{stock}/add-stock', [AdminStockController::class, 'addStock'])->name('addStock');
     // Orders Routes
     Route::prefix('orders')->name('orders.')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index'); // List all orders
-        Route::get('/{order}', [OrderController::class, 'show'])->name('show'); // Show specific order
-        Route::post('/{order}/update-status', [OrderController::class, 'updateStatus'])->name('updateStatus'); // Update order status
+        Route::get('/', [AdminOrderController::class, 'index'])->name('index'); // List all orders
+        Route::get('/{order}', [AdminOrderController::class, 'show'])->name('show'); // Show specific order
+        Route::post('/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('updateStatus'); // Update order status
+        Route::post('/{order}/approve-payment', [AdminOrderController::class, 'approvePayment'])->name('approvePayment'); // Approve payment for transfer orders
+        Route::post('/{order}/order-completed', [AdminOrderController::class, 'orderCompleted'])->name('orderCompleted'); // Mark order as completed
+        Route::post('/{order}/process-payment', [AdminOrderController::class, 'processPayment'])->name('processPayment');
     });
 });
   

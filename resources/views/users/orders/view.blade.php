@@ -31,19 +31,46 @@
         </table>
         
         <div class="mt-4">
-            @if ($order->payment_status === 'unpaid' && !$order->image)
+            @if ($order->type == "pay_at_cashier")
+                @if ($order->payment_status == 'unpaid')
+                    <p>Bayar dikasir agar pesanan dapat diproses segera.</p>
+                @elseif ($order->payment_status == 'confirmed')
+                    @if ($order->status == 'in-progress')
+                        <p>Pesananmu sedang diproses.</p>
+                    @elseif($order->status == 'completed')
+                        <p>Pesanan telah selesai diproses.</p>
+                    @endif
+                @endif
+            @else
+                @if ($order->payment_status == 'unpaid')
+                    <p>Kirim Bukti Bayar kamu agar pesanan dapat diproses segera.</p>
+                    <!-- Button to trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentProofModal">
+                        Upload bukti bayar
+                    </button>
+                @elseif ($order->payment_status == 'pending')
+                    <p>Kamu telah mengupload bukti pembayaran. Pembayaranmu sedang dikonfirmasi.</p>
+                    <a href="{{ asset('storage/' . $order->image) }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Payment Proof</a>
+                @elseif ($order->payment_status == 'confirmed')
+                    @if ($order->status == 'in-progress')
+                        <p>Pesananmu sedang diproses.</p>
+                    @elseif($order->status == 'completed')
+                        <p>Pesanan telah selesai diproses.</p>
+                    @endif
+                @endif
+            @endif
+            {{-- @if ($order->image && $order->payment_status == 'pending')
+                <p>Kamu telah mengupload bukti pembayaran. Pembayaranmu sedang dikonfirmasi.</p>
+                <a href="{{ asset('storage/' . $order->image) }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Payment Proof</a>
+            @elseif ($order->payment_status == 'confirmed')
+                <p>Pesananmu sedang diproses.</p>
+            @else
                 <p>Kirim Bukti Bayar kamu agar pesanan dapat diproses segera.</p>
                 <!-- Button to trigger modal -->
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentProofModal">
-                    Upload Payment Proof
+                    Lihat Bukti Bayar
                 </button>
-            @elseif ($order->payment_status === 'confirmed')
-                <p>Pembayaran kamu telah dikonfirmasi. Pesananmu sedang diproses.</p>
-            @elseif ($order->image && $order->payment_status === 'pending')
-                <p>Kamu telah mengupload bukti pembayaran. Pembayaranmu sedang dikonfirmasi.</p>
-            @else
-                <p>Pesananmu telah diproses.</p>
-            @endif
+            @endif --}}
         </div>
 
         <!-- Modal -->

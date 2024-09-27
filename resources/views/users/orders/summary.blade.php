@@ -1,38 +1,101 @@
 @extends('users.layouts.app')
 
-@section('title', 'Order Summary')
+@section('title', 'Order Details')
 
 @section('content')
     <div class="container mt-5">
-        <h2>Order Summary</h2>
+        <h2 class="mb-4">Order Details (ID: {{ $order->id }})</h2>
 
-        <p>Order ID: {{ $order->id }}</p>
-        <p>Total Price: Rp. {{ number_format($order->total_price, 0, ',', '.') }}</p>
-        <p>Status: {{ $order->status }}</p>
-        <p>Payment Status: {{ $order->payment_status }}</p>
+        <p><strong>Total Price:</strong> Rp. {{ number_format($order->total_price, 0, ',', '.') }}</p>
+        <p><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
+        <p><strong>Payment Status:</strong> {{ ucfirst($order->payment_status) }}</p>
 
-        <h3>Order Details</h3>
+        <h4 class="mt-4">Order Items:</h4>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
+                    <th class="text-center">Product Name</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-center">Price</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($order->orderDetails as $detail)
                 <tr>
-                    <td>{{ $detail->product->name }}</td>
-                    <td>{{ $detail->quantity }}</td>
-                    <td>Rp. {{ number_format($detail->price, 0, ',', '.') }}</td>
-                    <td>Rp. {{ number_format($detail->quantity * $detail->price, 0, ',', '.') }}</td>
+                    <td class="text-center">{{ $detail->product->name }}</td>
+                    <td class="text-center">{{ $detail->quantity }}</td>
+                    <td class="text-center">Rp. {{ number_format($detail->price, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+        
+        <div class="mt-4">
+            @if ($order->type == "pay_at_cashier")
+                @if ($order->payment_status == 'unpaid')
+                    <p>Bayar dikasir agar pesanan dapat diproses segera.</p>
+                @elseif ($order->payment_status == 'confirmed')
+                    @if ($order->status == 'in-progress')
+                        <p>Pesananmu sedang diproses.</p>
+                    @elseif($order->status == 'completed')
+                        <p>Pesanan telah selesai diproses.</p>
+                    @endif
+                @endif
+            @else
+                @if ($order->payment_status == 'unpaid')
+                    <p>Kirim Bukti Bayar kamu agar pesanan dapat diproses segera.</p>
+                    <!-- Button to trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentProofModal">
+                        Upload bukti bayar
+                    </button>
+                @elseif ($order->payment_status == 'pending')
+                    <p>Kamu telah mengupload bukti pembayaran. Pembayaranmu sedang dikonfirmasi.</p>
+                    <a href="{{ asset('storage/' . $order->image) }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Payment Proof</a>
+                @elseif ($order->payment_status == 'confirmed')
+                    @if ($order->status == 'in-progress')
+                        <p>Pesananmu sedang diproses.</p>
+                    @elseif($order->status == 'completed')
+                        <p>Pesanan telah selesai diproses.</p>
+                    @endif
+                @endif
+            @endif
+            {{-- @if ($order->image && $order->payment_status == 'pending')
+                <p>Kamu telah mengupload bukti pembayaran. Pembayaranmu sedang dikonfirmasi.</p>
+                <a href="{{ asset('storage/' . $order->image) }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Download Payment Proof</a>
+            @elseif ($order->payment_status == 'confirmed')
+                <p>Pesananmu sedang diproses.</p>
+            @else
+                <p>Kirim Bukti Bayar kamu agar pesanan dapat diproses segera.</p>
+                <!-- Button to trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentProofModal">
+                    Lihat Bukti Bayar
+                </button>
+            @endif --}}
+        </div>
 
-        <a href="{{ route('home') }}" class="btn btn-primary">Back to Home</a>
+        <!-- Modal -->
+        <div class="modal fade" id="paymentProofModal" tabindex="-1" aria-labelledby="paymentProofModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="paymentProofModalLabel">Upload Payment Proof</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('payment.upload', $order->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Select Payment Proof Image</label>
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                            </div>
+                            <div class="mb-3">
+                                <p>BCA no rek 00000000 atas nama Udinz</p>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

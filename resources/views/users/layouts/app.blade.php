@@ -112,6 +112,9 @@
             @if (session('error'))
                 $('#errorModal').modal('show');
             @endif
+            @if ($errors->any())
+                $('#errorModal').modal('show');
+            @endif
         });
     </script>
     

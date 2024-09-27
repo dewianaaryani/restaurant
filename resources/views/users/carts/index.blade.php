@@ -56,11 +56,25 @@
                 </tfoot>
             </table>
 
-            <div class="text-right">
-              <form action="{{ route('checkout') }}" method="POST">
-                  @csrf
-                  <button type="submit" class="btn btn-primary">Proceed to Checkout</button>
-              </form>
+            <div class="row">
+              <div class="col-12">
+                <div class="">
+                    <form action="{{ route('checkout') }}" method="POST">
+                        @csrf
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Select Payment Method</label>
+                            </div>
+                            <select class="custom-select" id="inputGroupSelect01" name="type">
+                                <option value="transfer">Transfer</option>
+                                <option value="pay_at_cashier">Pay At Cashier (Cash)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Proceed to Checkout</button>
+                    </form>
+                    
+                </div>
+              </div>
           </div>
         @endif
     </div>

@@ -31,19 +31,24 @@ class OrderController extends Controller
     public function uploadPaymentProof(Request $request, $orderId)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Validate the image
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         try {
-            $order = Order::findOrFail($orderId); // Fetch the order
-            $paymentProof = $request->file('image'); // Use the field name 'image'
+            $order = Order::findOrFail($orderId);
+            $paymentProof = $request->file('image');
+
+            // Check if the file was uploaded
+            if (!$paymentProof->isValid()) {
+                return redirect()->back()->with('error', 'Uploaded file is not valid.');
+            }
 
             // Store the image
             $path = $paymentProof->store('payment_proofs', 'public');
 
             // Update the order with the payment proof path
-            $order->image = $path; // Ensure your Order model has this field
-            $order->payment_status = 'pending'; // Update status as needed
+            $order->image = $path;
+            $order->payment_status = 'pending';
             $order->save();
 
             return redirect()->back()->with('success', 'Payment proof uploaded successfully!');
@@ -51,6 +56,7 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Failed to upload payment proof: ' . $e->getMessage());
         }
     }
+
 
 
 

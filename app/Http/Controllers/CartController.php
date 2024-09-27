@@ -9,6 +9,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
@@ -128,60 +129,58 @@ class CartController extends Controller
     // }
 
     public function checkout(Request $request)
-    {
-        DB::beginTransaction();
+{
+    // Ensure you have validated the input
+    $request->validate([
+        'type' => 'required|string',
+    ]);
+    DB::beginTransaction();
 
-        try {
-            // Get the user's cart items and ensure it returns a collection, not null
-            $carts = auth()->user()->carts ?? collect();
+    try {
+        // Get the user's cart items
+        $carts = auth()->user()->carts ?? collect();
 
-            // Check if the cart is empty
-            if ($carts->isEmpty()) {
-                return redirect()->back()->with('error', 'Your cart is empty.');
-            }
-
-            // Calculate the total price
-            $totalPrice = $carts->sum(function ($cart) {
-                return $cart->quantity * $cart->product->price;
-            });
-
-            // Create the order
-            $order = Order::create([
-                'user_id' => auth()->id(),
-                'total_price' => $totalPrice,
-                'status' => 'pending',
-                'payment_status' => 'unpaid',
-            ]);
-
-            // Create the order details
-            foreach ($carts as $cart) {
-                OrderDetail::create([
-                    'order_id' => $order->id,
-                    'product_id' => $cart->product_id,
-                    'quantity' => $cart->quantity,
-                    'price' => $cart->product->price,
-                ]);
-            }
-
-            // Clear the cart after checkout
-            auth()->user()->carts()->delete();
-
-            // Commit the transaction
-            DB::commit();
-
-            // Redirect to the order summary page with success message
-            return redirect()->route('order.summary', $order->id)->with('success', 'Order placed successfully.');
-        } catch (\Exception $e) {
-            // Rollback the transaction if something goes wrong
-            DB::rollBack();
-
-            // Log the error for debugging
-            Log::error('Checkout Error: ' . $e->getMessage());
-
-            // Redirect back with an error message
-            return redirect()->back()->with('error', 'There was an error processing your order. Please try again.');
+        if ($carts->isEmpty()) {
+            return redirect()->back()->with('error', 'Your cart is empty.');
         }
+
+        // Calculate the total price
+        $totalPrice = $carts->sum(function ($cart) {
+            return $cart->quantity * $cart->product->price;
+        });
+
+        // Create the order
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'total_price' => $totalPrice,
+            'status' => 'pending',
+            'payment_status' => 'unpaid',
+            'type' => $request->type, // Make sure this is set correctly
+        ]);
+
+        // Create order details
+        foreach ($carts as $cart) {
+            OrderDetail::create([
+                'order_id' => $order->id,
+                'product_id' => $cart->product_id,
+                'quantity' => $cart->quantity,
+                'price' => $cart->product->price,
+            ]);
+        }
+
+        // Clear the cart
+        auth()->user()->carts()->delete();
+
+        DB::commit();
+
+        return redirect()->route('order.summary', $order->id)->with('success', 'Order placed successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        
+        return redirect()->back()->with('error', 'There was an error processing your order. Please try again.');
     }
+}
+
 
     public function update(Request $request, $id)
     {

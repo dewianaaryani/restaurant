@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id(); // Primary key
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Foreign key to users table
             $table->decimal('total_price', 10, 2); // Total price of the order
+            $table->decimal('total_payment', 10, 2)->nullable();
+            $table->decimal('change', 10, 2)->nullable(); // Change in the total price of the order
+            $table->string('type'); // Type of payment (e.g., cash, credit card, etc.)
             $table->string('status')->default('pending'); // Status of the order (e.g., pending, completed, etc.)
             $table->string('payment_status')->default('unpaid'); // Payment status of the order (e.g., unpaid, paid, etc.)
             $table->string('image')->nullable(); // Payment status of the order (e.g., unpaid, paid, etc.)
