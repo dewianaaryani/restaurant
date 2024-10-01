@@ -4,11 +4,11 @@
         <div class="row g-5">
             <div class="col-lg-3 col-md-6">
                 <h4 class="section-title ff-secondary text-start text-primary fw-normal mb-4">Company</h4>
-                <a class="btn btn-link" href="">About Us</a>
-                <a class="btn btn-link" href="">Contact Us</a>
-                <a class="btn btn-link" href="">Reservation</a>
-                <a class="btn btn-link" href="">Privacy Policy</a>
-                <a class="btn btn-link" href="">Terms & Condition</a>
+                <a class="btn btn-link" href="https://www.bappenas.go.id/">About Us</a>
+                <a class="btn btn-link" href="https://www.instagram.com/gibran_rakabuming/?hl=en">Contact Us</a>
+                <a class="btn btn-link" href="https://www.instagram.com/kaesangp/?hl=en">Reservation</a>
+                <a class="btn btn-link" href="https://www.poldametrojaya.online/">Privacy Policy</a>
+                <a class="btn btn-link" href="https://www.mahkamahagung.go.id/id/hakim-agung-dan-hakim-ad-hoc">Terms & Condition</a>
             </div>
             <div class="col-lg-3 col-md-6">
                 <h4 class="section-title ff-secondary text-start text-primary fw-normal mb-4">Contact</h4>
@@ -43,10 +43,10 @@
         <div class="copyright">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved. 
+                    &copy; <a class="border-bottom" href="https://kfcku.com/">RESTORAN GD</a>, All Right Reserved. 
                     
                     <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                    Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                    Designed By <a class="border-bottom" href="https://www.mcdonalds.co.id/">GD</a>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <div class="footer-menu">

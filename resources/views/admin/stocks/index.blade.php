@@ -4,8 +4,10 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h1>Products</h1>
-
+                <div class="d-flex justify-content-between">
+                    <h2>Products</h2>
+                    <a href="{{route('admin.products.create')}}" class="btn btn-primary align-self-center">Add Product</a>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -23,10 +25,18 @@
                                 <td>{{ $stock->quantity }}</td>
                                 <td>
                                     <!-- Button to trigger modal -->
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStockModal{{ $stock->id }}">
-                                        Add Stock
-                                    </button>
-
+                                   <div class="btn-group">
+                                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addStockModal{{ $stock->id }}">
+                                            Add Stock
+                                        </button>
+                                        <a href="{{route('admin.products.edit', $stock->product->id)}}" class="btn btn-warning">Edit</a>
+                                        <form action="{{route('admin.products.destroy', $stock->product->id)}}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                            
+                                        </form>
+                                    </div>
                                     <!-- Modal -->
                                     <div class="modal fade" id="addStockModal{{ $stock->id }}" tabindex="-1" aria-labelledby="addStockModalLabel{{ $stock->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
